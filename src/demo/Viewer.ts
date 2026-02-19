@@ -2,11 +2,13 @@
 // 依存: three
 
 import * as THREE from "three";
+import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 
 export class Viewer {
     private renderer: THREE.WebGLRenderer;
     private camera: THREE.PerspectiveCamera;
     private scene: THREE.Scene;
+    private controls: OrbitControls;
 
     constructor(canvas: HTMLCanvasElement) {
         this.renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
@@ -31,6 +33,9 @@ export class Viewer {
         directional.position.set(10, 20, 10);
         this.scene.add(ambient, directional);
 
+        this.controls = new OrbitControls(this.camera, canvas);
+        this.controls.enableDamping = true;
+
         this.animate();
     }
 
@@ -46,6 +51,7 @@ export class Viewer {
 
     private animate() {
         requestAnimationFrame(() => this.animate());
+        this.controls.update();
         this.renderer.render(this.scene, this.camera);
     }
 }
