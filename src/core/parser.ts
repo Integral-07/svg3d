@@ -79,7 +79,7 @@ function parseBaseAttrs(el: Element) {
 
 function parseMaterialAttr(el: Element): MaterialInfo {
     return {
-        preset: el.getAttribute("base") ?? undefined,
+        preset: el.getAttribute("material") ?? el.getAttribute("base") ?? undefined,
         color: el.getAttribute("color") ?? undefined,
         opacity: el.getAttribute("opacity") !== null ? Number(el.getAttribute("opacity")) : undefined,
         roughness: el.getAttribute("roughness") !== null ? Number(el.getAttribute("roughness")) : undefined,
