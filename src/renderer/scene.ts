@@ -3,12 +3,27 @@
 
 import * as THREE from "three";
 import type { SVG3DNode } from "../core/ast.ts";
-import { buildBox, applyTransform } from "./primitives.ts";
+import { buildBox, buildSphere, buildCylinder, buildCone, buildPlane, buildTorus, applyTransform } from "./primitives.ts";
 
 export function buildObject(node: SVG3DNode): THREE.Object3D | null {
     switch (node.type) {
         case "box":
             return buildBox(node);
+
+        case "sphere":
+            return buildSphere(node);
+
+        case "cylinder":
+            return buildCylinder(node);
+
+        case "cone":
+            return buildCone(node);
+
+        case "plane":
+            return buildPlane(node);
+
+        case "torus":
+            return buildTorus(node);
 
         case "group": {
             const group = new THREE.Group();

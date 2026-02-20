@@ -33,6 +33,45 @@ export interface BoxNode extends BaseNode {
     material: MaterialInfo;
 }
 
+export interface SphereNode extends BaseNode {
+
+    type: "sphere";
+    radius: number;
+    material: MaterialInfo;
+}
+
+export interface CylinderNode extends BaseNode {
+
+    type: "cylinder";
+    radius: number;
+    height: number;
+    material: MaterialInfo;
+}
+
+export interface ConeNode extends BaseNode {
+
+    type: "cone";
+    radius: number;
+    height: number;
+    material: MaterialInfo;
+}
+
+export interface PlaneNode extends BaseNode {
+
+    type: "plane";
+    width: number;
+    depth: number;
+    material: MaterialInfo;
+}
+
+export interface TorusNode extends BaseNode {
+
+    type: "torus";
+    radius: number;
+    tube: number;
+    material: MaterialInfo;
+}
+
 // シーン構造ノード
 export interface SceneNode extends BaseNode {
     
@@ -57,7 +96,7 @@ export interface SVG3DAST {
 }
 
 export type SVG3DNode =
-    | BoxNode
+    | BoxNode | SphereNode | CylinderNode | ConeNode | PlaneNode | TorusNode
     | SceneNode
     | GroupNode;
 

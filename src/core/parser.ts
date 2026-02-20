@@ -106,6 +106,61 @@ function walkNode(el: Element, defs: Defs): SVG3DNode | null {
                     .filter((n): n is SVG3DNode => n !== null),
             };
 
+        case "sphere":
+            return {
+                type: "sphere",
+                ...parseBaseAttrs(el),
+                radius: Number(el.getAttribute("radius") ?? 1),
+                material: parseMaterialAttr(el),
+                children: Array.from(el.childNodes)
+                    .filter((n): n is Element => n.nodeType === 1)
+                    .map(child => walkNode(child, defs))
+                    .filter((n): n is SVG3DNode => n !== null),
+            };
+
+        case "cylinder":
+            return {
+                type: "cylinder",
+                ...parseBaseAttrs(el),
+                radius: Number(el.getAttribute("radius") ?? 1),
+                height: Number(el.getAttribute("height") ?? 1),
+                material: parseMaterialAttr(el),
+                children: Array.from(el.childNodes)
+                    .filter((n): n is Element => n.nodeType === 1)
+                    .map(child => walkNode(child, defs))
+                    .filter((n): n is SVG3DNode => n !== null),
+            }
+
+        case "cone":
+            return {
+                type: "cone",
+                ...parseBaseAttrs(el),
+                radius: Number(el.getAttribute("radius") ?? 1),
+                height: Number(el.getAttribute("height") ?? 1),
+                material: parseMaterialAttr(el),
+                children: [],
+            };
+
+        case "plane":
+            return {
+                type: "plane",
+                ...parseBaseAttrs(el),
+                width: Number(el.getAttribute("width") ?? 1),
+                depth: Number(el.getAttribute("depth") ?? 1),
+                material: parseMaterialAttr(el),
+                children: [],
+            };
+
+        case "torus":
+            return {
+                type: "torus",
+                ...parseBaseAttrs(el),
+                radius: Number(el.getAttribute("radius") ?? 1),
+                tube: Number(el.getAttribute("tube") ?? 0.4),
+                material: parseMaterialAttr(el),
+                children: [],
+            };
+
         case "scene":
             return {
                 type: "scene",
