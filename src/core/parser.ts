@@ -51,7 +51,8 @@ function parseDefs(defsEl: Element | null): Defs {
         } else if (tag === "define") {
             const name = child.getAttribute("name");
             if (name) {
-                elements[name] = Array.from(child.children)
+                elements[name] = Array.from(child.childNodes)
+                    .filter((n): n is Element => n.nodeType === 1)
                     .map(c => walkNode(c, { materials, elements }))
                     .filter((n): n is SVG3DNode => n !== null);
             }
@@ -182,6 +183,13 @@ function walkNode(el: Element, defs: Defs): SVG3DNode | null {
             };
 
         default:
+            if (defs.elements[tag]) {
+                return {
+                    type: "group",
+                    ...parseBaseAttrs(el),
+                    children: defs.elements[tag],
+                };
+            }
             return null;
     }
 }

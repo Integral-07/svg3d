@@ -9,25 +9,30 @@ const canvas = document.getElementById("canvas") as HTMLCanvasElement;
 const viewer = new Viewer(canvas);
 
 const xml = `<svg3d xmlns="http://www.svg3d.org">
+  <defs>
+    <define name="tree">
+      <group>
+        <cylinder radius="0.15" height="2" position="0 1 0" material="bark"/>
+        <cone radius="1.5" height="1.5" position="0 2.5 0" material="leaves"/>
+        <cone radius="1.2" height="1.5" position="0 3.5 0" material="leaves"/>
+        <cone radius="0.8" height="1.2" position="0 4.5 0" material="leaves"/>
+        <cone radius="0.4" height="1.0" position="0 5.3 0" material="leaves"/>
+      </group>
+    </define>
+
+    <define name="house">
+      <group>
+        <box width="5" height="3" depth="4" position="0 1.5 0" material="brick"/>
+        <cone radius="3.2" height="2" position="0 4 0" material="roof"/>
+      </group>
+    </define>
+  </defs>
+
   <scene>
-
     <plane width="30" depth="30" material="grass" rotation="-90 0 0"/>
-
-    <group id="house" position="0 0 0">
-      <box width="5" height="3" depth="4" position="0 1.5 0" material="brick"/>
-      <cone radius="3.2" height="2" position="0 4 0" material="roof"/>
-    </group>
-
-    <group id="tree1" position="5 0 2">
-      <cylinder radius="0.2" height="3" position="0 1.5 0" material="bark"/>
-      <sphere radius="1.2" position="0 3.5 0" material="leaves"/>
-    </group>
-
-    <group id="tree2" position="-5 0 3">
-      <cylinder radius="0.2" height="2.5" position="0 1.25 0" material="bark"/>
-      <sphere radius="1" position="0 3 0" material="leaves"/>
-    </group>
-
+    <house position="0 0 0"/>
+    <tree position="5 0 2"/>
+    <tree position="-5 0 3"/>
   </scene>
 </svg3d>`;
 

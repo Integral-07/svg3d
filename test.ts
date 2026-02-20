@@ -1,6 +1,11 @@
 import { parse } from "./src/core/parser.ts";
 
 const xml = `<svg3d xmlns="http://www.svg3d.org">
+  <defs>
+    <define name="tree">
+      <sphere radius="2" position="0 0 0" material="brick" />
+    </define>
+  </defs>
   <scene>
     <box width="2" height="2" depth="2" position="0 1 0" material="brick"/>
     <sphere radius="2" position="2 2 0" />
