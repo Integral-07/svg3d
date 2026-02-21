@@ -162,6 +162,50 @@ function walkNode(el: Element, defs: Defs): SVG3DNode | null {
                 children: [],
             };
 
+        case "lathe": {
+            const pointsAttr = el.getAttribute("points") ?? "0 0, 1 0";
+            const points: [number, number][] = pointsAttr.split(",").map(pair => {
+                const [x, y] = pair.trim().split(/\s+/).map(s => Number(s));
+                return [x ?? 0, y ?? 0];
+            });
+            return {
+                type: "lathe",
+                ...parseBaseAttrs(el),
+                points,
+                segments: Number(el.getAttribute("segments") ?? 32),
+                material: parseMaterialAttr(el),
+                children: [],
+            };
+        }
+
+        case "wedge":
+            return {
+                type: "wedge",
+                ...parseBaseAttrs(el),
+                width: Number(el.getAttribute("width") ?? 1),
+                height: Number(el.getAttribute("height") ?? 1),
+                depth: Number(el.getAttribute("depth") ?? 1),
+                material: parseMaterialAttr(el),
+                children: [],
+            };
+
+        case "extrude": {
+            const childEls = Array.from(el.childNodes).filter((n): n is Element => n.nodeType === 1);
+            const svgEl = childEls.find(n => n.tagName.toLowerCase() === "svg");
+            const pathEls = svgEl
+                ? Array.from(svgEl.childNodes).filter((n): n is Element => n.nodeType === 1)
+                : [];
+            const pathEl = pathEls.find(n => n.tagName.toLowerCase() === "path");
+            return {
+                type: "extrude",
+                ...parseBaseAttrs(el),
+                path: pathEl?.getAttribute("d") ?? "",
+                depth: Number(el.getAttribute("depth") ?? 1),
+                material: parseMaterialAttr(el),
+                children: [],
+            };
+        }
+
         case "scene":
             return {
                 type: "scene",

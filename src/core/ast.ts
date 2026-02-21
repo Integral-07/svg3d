@@ -72,6 +72,31 @@ export interface TorusNode extends BaseNode {
     material: MaterialInfo;
 }
 
+export interface LatheNode extends BaseNode {
+
+    type: "lathe";
+    points: [number, number][];
+    segments: number;
+    material: MaterialInfo;
+}
+
+export interface WedgeNode extends BaseNode {
+
+    type: "wedge";
+    width: number;
+    height: number;
+    depth: number;
+    material: MaterialInfo;
+}
+
+export interface ExtrudeNode extends BaseNode {
+
+    type: "extrude";
+    path: string;
+    depth: number;
+    material: MaterialInfo;
+}
+
 // シーン構造ノード
 export interface SceneNode extends BaseNode {
     
@@ -88,8 +113,8 @@ export interface SVG3DAST {
     
     type: "svg3d";
     defs: {
-    materials: Record<string, MaterialInfo>;
-    elements: Record<string, SVG3DNode[]>; // define展開後の子ノード
+        materials: Record<string, MaterialInfo>;
+        elements: Record<string, SVG3DNode[]>; // define展開後の子ノード
     };
     scene: SceneNode;
     overlay?: string; // SVGをそのまま文字列で保持
@@ -97,6 +122,7 @@ export interface SVG3DAST {
 
 export type SVG3DNode =
     | BoxNode | SphereNode | CylinderNode | ConeNode | PlaneNode | TorusNode
+    | LatheNode | WedgeNode | ExtrudeNode
     | SceneNode
     | GroupNode;
 
