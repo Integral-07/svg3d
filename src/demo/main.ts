@@ -37,10 +37,20 @@ const xml = `<svg3d xmlns="http://www.svg3d.org">
 
     <define name="house">
       <group>
-        <!-- 壁 -->
-        <box width="8" height="4" depth="6" position="0 2 0" material="brick"/>
+        <!-- 壁（CSGでドア・窓の穴を開ける） -->
+        <csg position="0 2 0">
+          <box width="8" height="4" depth="6" material="brick"/>
+          <subtract>
+            <!-- ドア穴 -->
+            <box width="1.2" height="2.4" depth="1" position="0 -0.8 3"/>
+            <!-- 窓穴（左） -->
+            <box width="1.4" height="1.2" depth="1" position="-2.8 0.5 3"/>
+            <!-- 窓穴（右） -->
+            <box width="1.4" height="1.2" depth="1" position="2.8 0.5 3"/>
+          </subtract>
+        </csg>
 
-        <!-- 屋根（前後2つのwedgeで切妻屋根） -->
+        <!-- 屋根 -->
         <wedge width="8" height="2.5" depth="3" position="0 4 0" material="roof"/>
         <wedge width="8" height="2.5" depth="3" position="0 4 0" rotation="0 180 0" material="roof"/>
 
@@ -50,16 +60,10 @@ const xml = `<svg3d xmlns="http://www.svg3d.org">
 
         <!-- ドア -->
         <box width="1.1" height="2.2" depth="0.08" position="0 1.1 3.04" material="wood"/>
-        <!-- ドア上枠 -->
-        <box width="1.3" height="0.15" depth="0.12" position="0 2.27 3.04" material="wood"/>
-        <!-- ドア左枠 -->
-        <box width="0.12" height="2.2" depth="0.12" position="-0.61 1.1 3.04" material="wood"/>
-        <!-- ドア右枠 -->
-        <box width="0.12" height="2.2" depth="0.12" position="0.61 1.1 3.04" material="wood"/>
 
-        <!-- 窓（左） -->
+        <!-- 窓ガラス（左） -->
         <window position="-2.8 2.5 3.04"/>
-        <!-- 窓（右） -->
+        <!-- 窓ガラス（右） -->
         <window position="2.8 2.5 3.04"/>
 
         <!-- 階段 -->

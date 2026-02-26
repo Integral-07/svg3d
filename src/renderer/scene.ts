@@ -2,11 +2,15 @@
 // 依存: three, core/ast.ts, primitives.ts
 
 import * as THREE from "three";
-import type { SVG3DNode } from "../core/ast.ts";
+import type { CSGStep, CSGNode, SVG3DNode } from "../core/ast.ts";
 import { buildBox, buildSphere, buildCylinder, buildCone, buildPlane, buildTorus, buildLathe, buildWedge, buildExtrude, applyTransform } from "./primitives.ts";
+import { Brush, Evaluator, SUBTRACTION, ADDITION, INTERSECTION } from "three-bvh-csg"; 
 
 export function buildObject(node: SVG3DNode): THREE.Object3D | null {
     switch (node.type) {
+        case "csg":
+            return buildCSG(node);
+
         case "box":
             return buildBox(node);
 
@@ -47,4 +51,36 @@ export function buildObject(node: SVG3DNode): THREE.Object3D | null {
         case "scene":
             return null;
     }
+}
+
+export function buildCSG(node: CSGNode): THREE.Mesh {
+
+    const evaluator = new Evaluator();
+
+    const baseMesh = buildObject(node.base) as THREE.Mesh;
+    const baseBrush = new Brush(baseMesh.geometry, baseMesh.material);
+    baseBrush.position.copy(baseMesh.position);
+    baseBrush.rotation.copy(baseMesh.rotation);
+    baseBrush.scale.copy(baseMesh.scale);
+    baseBrush.updateMatrixWorld();
+
+    const OP_MAP = { subtract: SUBTRACTION, union: ADDITION, intersect: INTERSECTION };
+    
+    let resultBrush = baseBrush;
+    for (const step of node.steps){
+        for (const shape of step.shapes){
+            
+            const shapeMesh = buildObject(shape) as THREE.Mesh;
+            const shapeBrush = new Brush(shapeMesh.geometry, shapeMesh.material);
+            shapeBrush.position.copy(shapeMesh.position);
+            shapeBrush.rotation.copy(shapeMesh.rotation);
+            shapeBrush.scale.copy(shapeMesh.scale);
+            shapeBrush.updateMatrixWorld();
+            
+            resultBrush = evaluator.evaluate(resultBrush, shapeBrush, OP_MAP[step.op]);
+        }
+    }
+
+    applyTransform(resultBrush, node);
+    return resultBrush;
 }

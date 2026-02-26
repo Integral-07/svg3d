@@ -93,6 +93,30 @@ function walkNode(el: Element, defs: Defs): SVG3DNode | null {
     const tag = el.tagName.toLowerCase();
 
     switch (tag) {
+        case "csg": {
+
+            const children = Array.from(el.childNodes).filter((n): n is Element => n.nodeType === 1 );
+            const [firstChild, ...rest] = children;
+
+            const base = walkNode(firstChild, defs);
+            if (!base) throw new Error("csgのベース要素が不正です");
+
+            return {
+
+                type: "csg",
+                ...parseBaseAttrs(el),
+                base,
+                steps: rest.map(child => ({
+                    op: child.tagName as "subtract" | "union" | "intersect",
+                    shapes: Array.from(child.childNodes)
+                        .filter((n): n is Element => n.nodeType === 1)
+                        .map(c => walkNode(c, defs))
+                        .filter((n): n is SVG3DNode => n !== null)
+                })),
+                children: []
+            }
+        }
+
         case "box":
             return {
                 type: "box",

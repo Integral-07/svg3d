@@ -110,3 +110,4 @@ export function buildExtrude(node: ExtrudeNode): THREE.Group {
     applyTransform(group, node);
     return group;
 }
+

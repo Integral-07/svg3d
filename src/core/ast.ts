@@ -108,6 +108,20 @@ export interface GroupNode extends BaseNode {
     type: "group";
 }
 
+// csgノード
+export interface CSGNode extends BaseNode{
+
+    type: "csg";
+    base: SVG3DNode;
+    steps: CSGStep[];
+}
+
+export interface CSGStep {
+
+    op: "subtract" | "union" | "intersect";
+    shapes: SVG3DNode[]
+}
+
 // ルートのAST
 export interface SVG3DAST {
     
@@ -124,6 +138,7 @@ export type SVG3DNode =
     | BoxNode | SphereNode | CylinderNode | ConeNode | PlaneNode | TorusNode
     | LatheNode | WedgeNode | ExtrudeNode
     | SceneNode
-    | GroupNode;
+    | GroupNode
+    | CSGNode;
 
 export type Defs = SVG3DAST["defs"];
