@@ -1,5 +1,5 @@
 // XML文字列 → AST
-import type { SVG3DAST, SVG3DNode, Defs, MaterialInfo, SceneNode } from "./ast.ts";
+import type { SVG3DAST, SVG3DNode, Defs, MaterialInfo, SceneNode, AmbientLightNode } from "./ast.ts";
 
 // 環境を自動判定して切り替え
 const { DOMParser, XMLSerializer } = typeof window !== "undefined"
@@ -229,6 +229,59 @@ function walkNode(el: Element, defs: Defs): SVG3DNode | null {
                 children: [],
             };
         }
+
+        case "camera":
+            return {
+                type: "camera",
+                id: el.getAttribute("id") ?? undefined,
+                position: parseVec3(el.getAttribute("position"), [0, 5, 10]),
+                target: parseVec3(el.getAttribute("target"), [0, 0, 0]),
+                fov: Number(el.getAttribute("fov") ?? 75),
+                near: Number(el.getAttribute("near") ?? 0.1),
+                far: Number(el.getAttribute("far") ?? 1000),
+            };
+
+        case "ambient-light":
+            return {
+                type: "ambient-light",
+                ...parseBaseAttrs(el),
+                color: el.getAttribute("color") ?? "#ffffff",
+                intensity: Number(el.getAttribute("intensity") ?? 1),
+                children: [],
+            };
+
+        case "directional-light":
+            return {
+                type: "directional-light",
+                ...parseBaseAttrs(el),
+                color: el.getAttribute("color") ?? "#ffffff",
+                intensity: Number(el.getAttribute("intensity") ?? 1),
+                children: [],
+            };
+
+        case "point-light":
+            return {
+                type: "point-light",
+                ...parseBaseAttrs(el),
+                color: el.getAttribute("color") ?? "#ffffff",
+                intensity: Number(el.getAttribute("intensity") ?? 1),
+                distance: Number(el.getAttribute("distance") ?? 0),
+                decay: Number(el.getAttribute("decay") ?? 2),
+                children: [],
+            }
+
+        case "spot-light":
+            return {
+                type: "spot-light",
+                ...parseBaseAttrs(el),
+                color: el.getAttribute("color") ?? "#ffffff",
+                intensity: Number(el.getAttribute("intensity") ?? 1),
+                distance: Number(el.getAttribute("distance") ?? 0),
+                angle: Number(el.getAttribute("angle") ?? 30),
+                penumbra: Number(el.getAttribute("penumbra") ?? 0),
+                target: parseVec3(el.getAttribute("target"), [0, 0, 0]),
+                children: [],
+            }
 
         case "scene":
             return {

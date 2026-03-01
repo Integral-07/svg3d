@@ -48,7 +48,30 @@ export function buildObject(node: SVG3DNode): THREE.Object3D | null {
             return group;
         }
 
+        case "ambient-light":
+            return new THREE.AmbientLight(node.color, node.intensity);
+
+        case "directional-light": {
+            const light = new THREE.DirectionalLight(node.color, node.intensity);                                                              
+            light.position.set(...node.position);                                                                                                
+            return light; 
+        }
+
+        case "point-light": {
+            const light = new THREE.PointLight(node.color, node.intensity, node.distance, node.decay);
+            light.position.set(...node.position);
+            return light;
+        }
+
+        case "spot-light": {
+            const light = new THREE.SpotLight(node.color, node.intensity, node.distance, THREE.MathUtils.degToRad(node.angle), node.penumbra);
+            light.position.set(...node.position);
+            light.target.position.set(...node.target);
+            return light;
+        }
+
         case "scene":
+        case "camera":
             return null;
     }
 }

@@ -3,6 +3,7 @@
 
 import * as THREE from "three";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
+import type { CameraNode } from "../core/ast.ts";
 
 export class Viewer {
     private renderer: THREE.WebGLRenderer;
@@ -41,12 +42,16 @@ export class Viewer {
 
     setScene(scene: THREE.Scene) {
         this.scene = scene;
+    }
 
-        // ライトを引き継ぐ
-        const ambient = new THREE.AmbientLight(0xffffff, 0.5);
-        const directional = new THREE.DirectionalLight(0xffffff, 1);
-        directional.position.set(10, 20, 10);
-        this.scene.add(ambient, directional);
+    applyCameraNode(node: CameraNode) {
+        this.camera.fov = node.fov;
+        this.camera.near = node.near;
+        this.camera.far = node.far;
+        this.camera.position.set(...node.position);
+        this.camera.updateProjectionMatrix();
+        this.controls.target.set(...node.target);
+        this.controls.update();
     }
 
     private animate() {

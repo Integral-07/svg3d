@@ -10,6 +10,17 @@ const viewer = new Viewer(canvas);
 
 const xml = `<svg3d xmlns="http://www.svg3d.org">
   <defs>
+    <define name="streetlight">
+      <group>
+        <!-- ポール -->
+        <cylinder radius="0.08" height="5" position="0 2.5 0" material="concrete"/>
+        <!-- アーム -->
+        <box width="0.08" height="0.08" depth="1" position="0 5.1 -0.5" material="concrete"/>
+        <!-- ランプ -->
+        <box width="0.4" height="0.2" depth="0.4" position="0 4.95 -1" material="emissive"/>
+      </group>
+    </define>
+
     <define name="tree">
       <group>
         <cylinder radius="0.15" height="2" position="0 1 0" material="bark"/>
@@ -51,8 +62,8 @@ const xml = `<svg3d xmlns="http://www.svg3d.org">
         </csg>
 
         <!-- 屋根 -->
-        <wedge width="8" height="2.5" depth="3" position="0 4 0" material="roof"/>
-        <wedge width="8" height="2.5" depth="3" position="0 4 0" rotation="0 180 0" material="roof"/>
+        <wedge width="8" height="2.5" depth="3" position="0 5.25 1.5" material="roof"/>
+        <wedge width="8" height="2.5" depth="3" position="0 5.25 -1.5" rotation="0 180 0" material="roof"/>
 
         <!-- 煙突 -->
         <box width="0.8" height="2.5" depth="0.8" position="2.5 5.2 -1" material="brick"/>
@@ -78,14 +89,33 @@ const xml = `<svg3d xmlns="http://www.svg3d.org">
   </defs>
 
   <scene>
+    <camera position="15 8 15" target="0 2 0" fov="60"/>
+    <ambient-light color="#1a1a2e" intensity="0.3"/>
+    <directional-light color="#ff8844" position="-10 15 10" intensity="1.5"/>
+    <directional-light color="#4488ff" position="10 5 -10" intensity="0.8"/>
+    <point-light color="#ffcc00" intensity="30" distance="12" position="0 3 4"/>
     <plane width="50" depth="50" material="grass" rotation="-90 0 0"/>
     <house position="0 0 0"/>
     <tree position="8 0 2"/>
     <tree position="-8 0 3"/>
     <tree position="10 0 -2"/>
+
+    <!-- 街灯 -->
+    <streetlight position="6 0 6"/>
+    <point-light color="#ffee88" intensity="40" distance="10" position="6 5 5"/>
+
+    <streetlight position="-6 0 6"/>
+    <point-light color="#ffee88" intensity="40" distance="10" position="-6 5 5"/>
+
+    <streetlight position="6 0 -6"/>
+    <point-light color="#ffee88" intensity="40" distance="10" position="6 5 -7"/>
+
+    <streetlight position="-6 0 -6"/>
+    <point-light color="#ffee88" intensity="40" distance="10" position="-6 5 -7"/>
   </scene>
 </svg3d>`;
 
 const ast = parse(xml);
-const scene = toThreeScene(ast);
+const { scene, camera } = toThreeScene(ast);
 viewer.setScene(scene);
+if (camera) viewer.applyCameraNode(camera);
