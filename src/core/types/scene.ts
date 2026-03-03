@@ -11,6 +11,13 @@ export interface GroupNode extends BaseNode {
     type: "group";
 }
 
+export interface RepeatNode extends BaseNode {
+    type: "repeat";
+    count: number;
+    position_offset: [number, number, number];
+    deg_offset: [number, number, number];
+}
+
 export interface CSGStep {
     op: "subtract" | "union" | "intersect";
     shapes: SVG3DNode[];
@@ -29,6 +36,7 @@ export type SVG3DNode =
     | CameraNode
     | SceneNode
     | GroupNode
+    | RepeatNode
     | CSGNode;
 
 export interface SVG3DAST {

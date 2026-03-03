@@ -100,6 +100,11 @@ const xml = `<svg3d xmlns="http://www.svg3d.org">
     <tree position="-8 0 3"/>
     <tree position="10 0 -2"/>
 
+    <!-- フェンス -->
+    <repeat count="8" position-offset="1.2 0 0">
+      <box width="0.1" height="1.2" depth="0.1" position="-3 0.6 5" material="wood"/>
+    </repeat>
+
     <!-- 街灯 -->
     <streetlight position="6 0 6"/>
     <point-light color="#ffee88" intensity="40" distance="10" position="6 5 5"/>

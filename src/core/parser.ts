@@ -93,6 +93,21 @@ function walkNode(el: Element, defs: Defs): SVG3DNode | null {
     const tag = el.tagName.toLowerCase();
 
     switch (tag) {
+        case "repeat": {
+
+            return {
+                type: "repeat",
+                ...parseBaseAttrs(el),
+                count: Number(el.getAttribute("count")),
+                position_offset: parseVec3(el.getAttribute("position-offset"), [0, 0, 0]),
+                deg_offset: parseVec3(el.getAttribute("deg-offset"), [0, 0 ,0]),
+                children: Array.from(el.childNodes)
+                    .filter((n): n is Element => n.nodeType === 1)
+                    .map(child => walkNode(child, defs))
+                    .filter((n): n is SVG3DNode => n !== null),
+            }
+        }
+
         case "csg": {
 
             const children = Array.from(el.childNodes).filter((n): n is Element => n.nodeType === 1 );

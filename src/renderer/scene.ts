@@ -11,6 +11,25 @@ export function buildObject(node: SVG3DNode): THREE.Object3D | null {
         case "csg":
             return buildCSG(node);
 
+        case "repeat": {
+            const group = new THREE.Group();
+            applyTransform(group, node);
+            for (let i = 0; i < node.count; i++) {
+                for (const child of node.children) {
+                    const obj = buildObject(child);
+                    if (!obj) continue;
+                    obj.position.x += node.position_offset[0] * i;
+                    obj.position.y += node.position_offset[1] * i;
+                    obj.position.z += node.position_offset[2] * i;
+                    obj.rotation.x += THREE.MathUtils.degToRad(node.deg_offset[0]) * i;
+                    obj.rotation.y += THREE.MathUtils.degToRad(node.deg_offset[1]) * i;
+                    obj.rotation.z += THREE.MathUtils.degToRad(node.deg_offset[2]) * i;
+                    group.add(obj);
+                }
+            }
+            return group;
+        }
+
         case "box":
             return buildBox(node);
 
